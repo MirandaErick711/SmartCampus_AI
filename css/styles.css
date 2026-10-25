@@ -1,0 +1,22 @@
+:root{color-scheme:dark;--g:#00cc55;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{background:#000;color:#fff;font-family:Inter,system-ui,sans-serif;margin:0}
+.gl{background:rgba(12,12,14,.85);backdrop-filter:blur(12px);border:1px solid rgba(255,255,255,.08);border-radius:14px;transition:all .3s}
+.gl:hover{border-color:rgba(0,204,85,.35)}
+.btn{background:var(--g);color:#000;font-weight:700;padding:.5rem 1rem;border-radius:10px;box-shadow:0 0 18px rgba(0,204,85,.45);transition:all .3s;cursor:pointer}
+.btn:hover{filter:brightness(1.15);transform:translateY(-1px)}
+.bo{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.2);box-shadow:none}
+.bp{background:#b026ff;color:#fff;box-shadow:0 0 18px rgba(176,38,255,.5)}
+.in{background:#000;border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:.5rem .7rem;width:100%;color:#fff}
+.in:focus{outline:none;border-color:var(--g);box-shadow:0 0 10px rgba(0,204,85,.3)}
+.nv{display:flex;gap:.6rem;padding:.6rem .8rem;border-radius:10px;cursor:pointer;color:#aaa;transition:all .3s;white-space:nowrap}
+.nv:hover,.nv.on{color:var(--g);background:rgba(0,204,85,.08);text-shadow:0 0 8px rgba(0,204,85,.6)}
+.tg{font-size:.7rem;padding:2px 8px;border-radius:99px;border:1px solid;font-weight:600}
+.sc{position:absolute;left:0;right:0;height:3px;background:linear-gradient(90deg,#00cc55,#b026ff);box-shadow:0 0 14px #b026ff;animation:s 1.2s linear infinite}
+@keyframes s{0%{top:0}100%{top:100%}}
+.dot{width:26px;height:26px;border-radius:50%;border:2px solid #333;display:grid;place-items:center;font-size:.7rem;background:#000}
+.dot.d{background:var(--g);border-color:var(--g);color:#000;box-shadow:0 0 10px var(--g)}
+.dot.c{border-color:var(--g);animation:p 1.4s infinite}
+@keyframes p{50%{box-shadow:0 0 14px var(--g)}}
+#sb{transition:transform .3s}
+@media(max-width:767px){#sb{position:fixed;z-index:40;top:0;bottom:0;left:0;transform:translateX(-100%)}#sb.o{transform:none}}
+table{width:100%;font-size:.85rem}th{text-align:left;color:#888;font-weight:500;padding:.5rem}td{padding:.5rem;border-top:1px solid rgba(255,255,255,.06)}

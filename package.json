@@ -1,0 +1,5 @@
+{
+  "name": "smartcampus-ai",
+  "version": "1.0.0",
+  "scripts": { "start": "npx http-server . -p 5173 -o" }
+}
