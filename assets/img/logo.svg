@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente de Verde Tech (#00FF66) a Cyan Neón (#00E5FF) -->
+    <linearGradient id="scGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00FF66"/>
+      <stop offset="100%" stop-color="#00E5FF"/>
+    </linearGradient>
+    <filter id="scGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="1.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Escudo / Torre del Campus exterior -->
+  <path d="M24 4 L39 10 V23 C39 31.5 32.5 39 24 44 C15.5 39 9 31.5 9 23 V10 Z" 
+        fill="none" 
+        stroke="url(#scGrad)" 
+        stroke-width="2.5" 
+        stroke-linejoin="round"
+        filter="url(#scGlow)"/>
+
+  <!-- Birrete Universitario estilizado superior -->
+  <path d="M16 17 L24 13 L32 17 L24 21 Z" 
+        fill="url(#scGrad)" 
+        opacity="0.9"/>
+
+  <!-- Puntos y circuitos de monitoreo / conectividad del campus -->
+  <circle cx="24" cy="28" r="3.2" fill="#00FF66" filter="url(#scGlow)"/>
+  
+  <!-- Enlaces de red / gestión hacia la base -->
+  <path d="M24 21 V24.8 M20 33 L24 28 L28 33 M24 31.2 V37" 
+        stroke="url(#scGrad)" 
+        stroke-width="2" 
+        stroke-linecap="round"/>
+</svg>

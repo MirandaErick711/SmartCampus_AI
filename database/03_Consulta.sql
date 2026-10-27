@@ -39,7 +39,7 @@ JOIN Incidencias i ON h.idIncidencia = i.idIncidencia
 WHERE i.codIncdencia = 'INC-2026-0001'
 ORDER BY h.idHistorial ASC;
 
--- 3. Resumen Estadístico por Categoría y Estado
+-- 3. Resumen Estadistico por Categoria y Estado
 SELECT 
     c.nomCateg AS Categoria,
     COUNT(i.idIncidencia) AS Total_Incidencias,
