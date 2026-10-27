@@ -21,7 +21,7 @@ const CONFIG = {
   DOMAIN: '@smartcampus.edu.pe'
 };
 
-const ESTADOS = ['Registrada', 'En evaluación', 'Asignada', 'En atención', 'Resuelta', 'Cerrada'];
+const ESTADOS = ['Registrada', 'Revisada', 'Asignada', 'En atención', 'Resuelta'];
 const PRIORIDADES = ['Baja', 'Media', 'Alta', 'Crítica'];
 const ROLES = { reportante: 'Reportante', operador: 'Operador', tecnico: 'Técnico', administrador: 'Administrador' };
 const AREAS = ['Académica', 'Laboratorio', 'Administrativa', 'Biblioteca', 'Servicios Generales', 'Áreas comunes'];
@@ -60,15 +60,15 @@ const PRIO_KW = {
 };
 
 const CAMPUS = [
-  { nombre: 'Campus Central', pabellones: [
-    { nombre: 'Pabellón A', desc: 'Ingeniería y Sistemas', pisos: 4 },
-    { nombre: 'Pabellón B', desc: 'Ciencias y Humanidades', pisos: 4 },
-    { nombre: 'Pabellón C', desc: 'Administración y Economía', pisos: 3 } ] },
-  { nombre: 'Campus Norte', pabellones: [
-    { nombre: 'Pabellón D', desc: 'Laboratorios y Talleres', pisos: 3 },
-    { nombre: 'Pabellón E', desc: 'Biblioteca y Servicios', pisos: 2 } ] }
+  { nombre: 'Campus 1', pabellones: [
+    { nombre: 'Pabellon de Sistemas', desc: 'Ingenieria de Sistemas', pisos: 4 },
+    { nombre: 'Pabellon de Civil', desc: 'Ingenieria Civil', pisos: 3 },
+    { nombre: 'Pabellon de Enfermeria', desc: 'Ciencias de la Salud', pisos: 3 } ] },
+  { nombre: 'Campus 2', pabellones: [
+    { nombre: 'Pabellon de Agronoma', desc: 'Ciencias Agrarias', pisos: 3 },
+    { nombre: 'Pabellon de Derecho', desc: 'Derecho y Ciencias Politicas', pisos: 3 } ] }
 ];
-const aulasDePiso = (p) => [`Aula ${p}01`, `Aula ${p}02`, `Aula ${p}03`, `Laboratorio ${p}L`];
+const aulasDePiso = (p) => [`Aula ${p}01`, `Aula ${p}02`, `Aula ${p}03`, `Laboratorio D`];
 
 /* ---------------------------------------------------------------------
    1. UTILIDADES
@@ -128,17 +128,19 @@ class Store {
       password: 'demo123', rol, depto, activo: true, creado: ago(60), ...extra
     });
     const usuarios = [
-      U('u1', 'Carla Mendoza', 'reportante', 'Estudiante · Ing. de Sistemas'),
-      U('u2', 'Luis Ramírez', 'reportante', 'Docente · Ciencias'),
-      U('u3', 'Marta Quispe', 'operador', 'Mesa de Ayuda Operativa'),
-      U('u4', 'Jorge Salazar', 'tecnico', 'Electricidad e Infraestructura'),
-      U('u5', 'Andrea Vega', 'tecnico', 'Redes y Tecnología'),
-      U('u6', 'Pedro Huamán', 'tecnico', 'Carpintería y Mobiliario'),
-      U('u7', 'Sofía Rojas', 'administrador', 'Dirección de TI'),
-      U('u8', 'Rosa Tello', 'tecnico', 'Mantenimiento y Limpieza')
+      U('u1', 'Maycol Garcia', 'reportante', 'Estudiante · Ing. de Sistemas'),
+      U('u2', 'Janei Alburqueque', 'reportante', 'Docente · Ciencias e Ingenieria'),
+      U('u3', 'Jorge Avila', 'operador', 'Mesa de Ayuda Operativa'),
+      U('u4', 'Erick Miranda', 'tecnico', 'Mantenimiento e Infraestructura'),
+      U('u5', 'Juan Liñan', 'tecnico', 'Redes, Conectividad y TI'),
+      U('u6', 'David Valverde', 'tecnico', 'Mobiliario y Servicios Generales'),
+      U('u7', 'Angel Rojas', 'administrador', 'Administracion General de TI')
     ];
     // Cada paso del historial: [estado, díasAtrás, horasAtrás, usuarioId, nota]
-    const H = (steps) => steps.map(([estado, d, h, u, nota]) => ({ estado, fecha: ago(d, h), usuarioId: u, nota }));
+    const H = (steps) => steps.map(([estado, d, h, u, nota]) => {
+      const userObj = usuarios.find(x => x.id === u);
+      return { estado, fecha: ago(d, h), usuarioId: u, cambiadoPor: userObj ? userObj.nombre : (u || "Sistema"), nota };
+    });
     const ia = (categoria, subcategoria, prioridad, confianza, hits, objetos, validada = true) => ({
       categoria, subcategoria, prioridad, confianza, hits, objetos, validada, modificada: false,
       explicacion: [
@@ -155,7 +157,7 @@ class Store {
         campus: 'Campus Central', pabellon: 'Pabellón A', piso: '3', aula: 'Aula 302', area: 'Académica', categoria: 'Infraestructura', subcategoria: 'Iluminación / Instalaciones Eléctricas', prioridad: 'Alta', confianza: 95,
         ia: ia('Infraestructura', 'Iluminación / Instalaciones Eléctricas', 'Alta', 95, ['luminaria'], ['Luminaria / punto de luz', 'Superficie de techo o pared']),
         imagen: placeholderImg('LUMINARIA AULA 302', '#FFB800', '#000'), reportanteId: 'u2', tecnicoId: 'u4', estado: 'En atención', creada: ago(2, 3), actualizada: ago(0, 5),
-        historial: H([['Registrada', 2, 3, 'u2', 'Incidencia registrada por el usuario'], ['En evaluación', 2, 1, 'u3', 'Clasificación IA validada'], ['Asignada', 1, 20, 'u3', 'Asignada a Jorge Salazar'], ['En atención', 0, 5, 'u4', 'Técnico inició la reparación']]) }),
+        historial: H([['Registrada', 2, 3, 'u2', 'Incidencia registrada por el usuario'], ['Revisada', 2, 1, 'u3', 'Clasificación IA validada'], ['Asignada', 1, 20, 'u3', 'Asignada a Jorge Salazar'], ['En atención', 0, 5, 'u4', 'Técnico inició la reparación']]) }),
       mk(2, { titulo: 'La silla del laboratorio está deteriorada', descripcion: 'Una de las sillas del laboratorio 2L tiene la pata floja y el respaldo roto. Representa riesgo de caída para el estudiante.',
         campus: 'Campus Norte', pabellon: 'Pabellón D', piso: '2', aula: 'Laboratorio 2L', area: 'Laboratorio', categoria: 'Mobiliario', subcategoria: 'Mobiliario de Aula / Laboratorio', prioridad: 'Media', confianza: 91,
         ia: ia('Mobiliario', 'Mobiliario de Aula / Laboratorio', 'Media', 91, ['silla'], ['Silla o carpeta', 'Estructura metálica / madera'], false),
@@ -165,30 +167,30 @@ class Store {
         campus: 'Campus Central', pabellon: 'Pabellón B', piso: '2', aula: 'Aula 201', area: 'Académica', categoria: 'Tecnología', subcategoria: 'Equipamiento / Conectividad', prioridad: 'Alta', confianza: 93,
         ia: ia('Tecnología', 'Equipamiento / Conectividad', 'Alta', 93, ['proyector'], ['Pantalla o proyector', 'Equipo electrónico']),
         imagen: placeholderImg('PROYECTOR AULA 201', '#00E5FF', '#000'), reportanteId: 'u2', tecnicoId: 'u5', estado: 'Asignada', creada: ago(1, 8), actualizada: ago(0, 20),
-        historial: H([['Registrada', 1, 8, 'u2', 'Incidencia registrada por el usuario'], ['En evaluación', 1, 4, 'u3', 'Clasificación IA validada'], ['Asignada', 0, 20, 'u3', 'Asignada a Andrea Vega']]) }),
+        historial: H([['Registrada', 1, 8, 'u2', 'Incidencia registrada por el usuario'], ['Revisada', 1, 4, 'u3', 'Clasificación IA validada'], ['Asignada', 0, 20, 'u3', 'Asignada a Andrea Vega']]) }),
       mk(4, { titulo: 'Fuga de agua en el baño del segundo piso', descripcion: 'Hay una fuga de agua importante en el baño del segundo piso del pabellón C. El agua se está extendiendo al pasillo y representa riesgo de caídas.',
         campus: 'Campus Central', pabellon: 'Pabellón C', piso: '2', aula: 'Aula 203', area: 'Áreas comunes', categoria: 'Servicios', subcategoria: 'Mantenimiento / Limpieza', prioridad: 'Crítica', confianza: 96,
         ia: ia('Servicios', 'Mantenimiento / Limpieza', 'Crítica', 96, ['agua', 'baño'], ['Instalación sanitaria', 'Área común']),
-        imagen: placeholderImg('FUGA DE AGUA BANO', '#FF2A5F', '#000'), reportanteId: 'u1', estado: 'En evaluación', creada: ago(0, 3), actualizada: ago(0, 2),
-        historial: H([['Registrada', 0, 3, 'u1', 'Incidencia registrada por el usuario'], ['En evaluación', 0, 2, 'u3', 'Operador evalúa la urgencia']]) }),
+        imagen: placeholderImg('FUGA DE AGUA BANO', '#FF2A5F', '#000'), reportanteId: 'u1', estado: 'Revisada', creada: ago(0, 3), actualizada: ago(0, 2),
+        historial: H([['Registrada', 0, 3, 'u1', 'Incidencia registrada por el usuario'], ['Revisada', 0, 2, 'u3', 'Operador evalúa la urgencia']]) }),
       mk(5, { titulo: 'Sin conexión WiFi en el laboratorio de cómputo', descripcion: 'El laboratorio de cómputo 1L no tiene internet ni wifi desde el lunes. Las prácticas de programación están detenidas.',
         campus: 'Campus Norte', pabellon: 'Pabellón D', piso: '1', aula: 'Laboratorio 1L', area: 'Laboratorio', categoria: 'Tecnología', subcategoria: 'Equipamiento / Conectividad', prioridad: 'Alta', confianza: 97,
         ia: ia('Tecnología', 'Equipamiento / Conectividad', 'Alta', 97, ['internet', 'wifi'], ['Puerto / cableado de red', 'Estación de trabajo']),
         imagen: placeholderImg('RED LAB 1L', '#00E5FF', '#B026FF'), reportanteId: 'u2', tecnicoId: 'u5', estado: 'Resuelta', creada: ago(4, 2), actualizada: ago(1, 4),
         informeTecnico: 'Se reemplazó el switch de acceso del laboratorio (puerto 24 dañado) y se reconfiguró el SSID. Pruebas de conectividad en las 30 estaciones: OK.',
         imagenSolucion: placeholderImg('SWITCH REEMPLAZADO', '#00FF66', '#000'),
-        historial: H([['Registrada', 4, 2, 'u2', 'Incidencia registrada por el usuario'], ['En evaluación', 3, 20, 'u3', 'Clasificación IA validada'], ['Asignada', 3, 18, 'u3', 'Asignada a Andrea Vega'], ['En atención', 3, 2, 'u5', 'Técnico inició la reparación'], ['Resuelta', 1, 4, 'u5', 'Informe técnico registrado']]) }),
+        historial: H([['Registrada', 4, 2, 'u2', 'Incidencia registrada por el usuario'], ['Revisada', 3, 20, 'u3', 'Clasificación IA validada'], ['Asignada', 3, 18, 'u3', 'Asignada a Andrea Vega'], ['En atención', 3, 2, 'u5', 'Técnico inició la reparación'], ['Resuelta', 1, 4, 'u5', 'Informe técnico registrado']]) }),
       mk(6, { titulo: 'Cable expuesto con chispas en el pasillo', descripcion: 'Un cable eléctrico expuesto en el pasillo del primer piso está generando chispas cuando alguien pasa cerca. Peligro de cortocircuito.',
         campus: 'Campus Central', pabellon: 'Pabellón A', piso: '1', aula: 'Aula 103', area: 'Áreas comunes', categoria: 'Infraestructura', subcategoria: 'Iluminación / Instalaciones Eléctricas', prioridad: 'Crítica', confianza: 98,
         ia: ia('Infraestructura', 'Iluminación / Instalaciones Eléctricas', 'Crítica', 98, ['cable'], ['Instalación eléctrica', 'Superficie de techo o pared']),
         imagen: placeholderImg('CABLE EXPUESTO', '#FF2A5F', '#FFB800'), reportanteId: 'u1', tecnicoId: 'u4', estado: 'Asignada', creada: ago(0, 8), actualizada: ago(0, 4),
-        historial: H([['Registrada', 0, 8, 'u1', 'Incidencia registrada por el usuario'], ['En evaluación', 0, 6, 'u3', 'Prioridad crítica confirmada'], ['Asignada', 0, 4, 'u3', 'Asignada a Jorge Salazar']]) }),
+        historial: H([['Registrada', 0, 8, 'u1', 'Incidencia registrada por el usuario'], ['Revisada', 0, 6, 'u3', 'Prioridad crítica confirmada'], ['Asignada', 0, 4, 'u3', 'Asignada a Jorge Salazar']]) }),
       mk(7, { titulo: 'Pizarra acrílica rota en el aula 104', descripcion: 'La pizarra acrílica del aula 104 tiene una grieta que atraviesa la superficie y no permite escribir con normalidad.',
         campus: 'Campus Central', pabellon: 'Pabellón B', piso: '1', aula: 'Aula 101', area: 'Académica', categoria: 'Mobiliario', subcategoria: 'Mobiliario de Aula / Laboratorio', prioridad: 'Baja', confianza: 88,
         ia: ia('Mobiliario', 'Mobiliario de Aula / Laboratorio', 'Baja', 88, ['pizarra'], ['Pizarra', 'Superficie de mesa']),
         imagen: null, reportanteId: 'u2', tecnicoId: 'u6', estado: 'Cerrada', creada: ago(9), actualizada: ago(5),
         informeTecnico: 'Se reemplazó la pizarra acrílica por una nueva de 2.4 m. Se retiró el material dañado.',
-        historial: H([['Registrada', 9, 0, 'u2', 'Incidencia registrada por el usuario'], ['En evaluación', 8, 20, 'u3', 'Clasificación IA validada'], ['Asignada', 8, 18, 'u3', 'Asignada a Pedro Huamán'], ['En atención', 7, 0, 'u6', 'Técnico inició la reparación'], ['Resuelta', 6, 0, 'u6', 'Informe técnico registrado'], ['Cerrada', 5, 0, 'u3', 'Cierre definitivo confirmado por el operador']]) }),
+        historial: H([['Registrada', 9, 0, 'u2', 'Incidencia registrada por el usuario'], ['Revisada', 8, 20, 'u3', 'Clasificación IA validada'], ['Asignada', 8, 18, 'u3', 'Asignada a Pedro Huamán'], ['En atención', 7, 0, 'u6', 'Técnico inició la reparación'], ['Resuelta', 6, 0, 'u6', 'Informe técnico registrado'], ['Cerrada', 5, 0, 'u3', 'Cierre definitivo confirmado por el operador']]) }),
       mk(8, { titulo: 'Basura acumulada en el patio de la biblioteca', descripcion: 'Hay basura acumulada junto a los tachos del patio de la biblioteca desde el fin de semana. Genera mal olor y atrae insectos.',
         campus: 'Campus Norte', pabellon: 'Pabellón E', piso: '1', aula: 'Aula 102', area: 'Biblioteca', categoria: 'Servicios', subcategoria: 'Mantenimiento / Limpieza', prioridad: 'Media', confianza: 89,
         ia: ia('Servicios', 'Mantenimiento / Limpieza', 'Media', 89, ['basura'], ['Zona de residuos', 'Área común'], false),
@@ -409,7 +411,7 @@ class IncidenciaService {
     await delay(40); IncidenciaService._can(user, 'operador', 'administrador');
     const inc = IncidenciaService.get(id);
     if (inc.estado !== 'Registrada') throw new Error('La incidencia ya fue evaluada.');
-    IncidenciaService._hist(inc, 'En evaluación', user, 'Operador inició la evaluación'); Store.save();
+    IncidenciaService._hist(inc, 'Revisada', user, 'Operador inició la evaluación'); Store.save();
     AuditService.log('Estado actualizado', `${inc.codigo} · Registrada → En evaluación`, user);
     NotifService.push(`user:${inc.reportanteId}`, `Tu incidencia ${inc.codigo} está «En evaluación»`, 'estado', inc.id);
     return inc;
@@ -418,7 +420,7 @@ class IncidenciaService {
     await delay(40); IncidenciaService._can(user, 'operador', 'administrador');
     const inc = IncidenciaService.get(id);
     if (inc.ia) inc.ia.validada = true;
-    if (inc.estado === 'Registrada') IncidenciaService._hist(inc, 'En evaluación', user, 'Clasificación IA validada por el operador');
+    if (inc.estado === 'Registrada') IncidenciaService._hist(inc, 'Revisada', user, 'Clasificación IA validada por el operador');
     inc.actualizada = new Date().toISOString(); Store.save();
     AuditService.log('Incidencia evaluada', `${inc.codigo} · Clasificación IA validada (${inc.categoria} / ${inc.prioridad})`, user);
     NotifService.push(`user:${inc.reportanteId}`, `Tu incidencia ${inc.codigo} está «En evaluación»`, 'estado', inc.id);
@@ -429,7 +431,7 @@ class IncidenciaService {
     const inc = IncidenciaService.get(id); const old = `${inc.categoria}/${inc.subcategoria}/${inc.prioridad}`;
     Object.assign(inc, { categoria, subcategoria, prioridad });
     if (inc.ia) { inc.ia.modificada = true; inc.ia.validada = false; }
-    if (inc.estado === 'Registrada') IncidenciaService._hist(inc, 'En evaluación', user, 'Clasificación ajustada manualmente');
+    if (inc.estado === 'Registrada') IncidenciaService._hist(inc, 'Revisada', user, 'Clasificación ajustada manualmente');
     else inc.historial.push({ estado: inc.estado, fecha: new Date().toISOString(), usuarioId: user.id, nota: 'Clasificación ajustada manualmente' });
     inc.actualizada = new Date().toISOString(); Store.save();
     AuditService.log('Clasificación modificada', `${inc.codigo} · ${old} → ${categoria}/${subcategoria}/${prioridad}`, user);
@@ -439,8 +441,8 @@ class IncidenciaService {
     await delay(40); IncidenciaService._can(user, 'operador', 'administrador');
     const inc = IncidenciaService.get(id); const t = UserService.find(tecnicoId);
     if (!t) throw new Error('Selecciona un técnico.');
-    if (!['Registrada', 'En evaluación'].includes(inc.estado)) throw new Error('Solo se asigna desde «Registrada» o «En evaluación».');
-    if (inc.estado === 'Registrada') IncidenciaService._hist(inc, 'En evaluación', user, 'Evaluación automática previa a la asignación');
+    if (!['Registrada', 'Revisada'].includes(inc.estado)) throw new Error('Solo se asigna desde «Registrada» o «En evaluación».');
+    if (inc.estado === 'Registrada') IncidenciaService._hist(inc, 'Revisada', user, 'Evaluación automática previa a la asignación');
     inc.tecnicoId = tecnicoId;
     IncidenciaService._hist(inc, 'Asignada', user, `Asignada a ${t.nombre}`); Store.save();
     AuditService.log('Técnico asignado', `${inc.codigo} · Asignada a ${t.nombre}`, user);
@@ -666,7 +668,7 @@ class UIController {
     const resueltas = incs.filter(i => ['Resuelta', 'Cerrada'].includes(i.estado));
     const kpis = [
       { l: 'Total incidencias', v: incs.length, s: u.rol === 'reportante' ? 'Reportadas por ti' : u.rol === 'tecnico' ? 'Asignadas a ti' : 'En todo el campus', c: 'var(--g)', i: 'layers' },
-      { l: 'Sin asignar', v: incs.filter(i => ['Registrada', 'En evaluación'].includes(i.estado)).length, s: 'Pendientes de gestión', c: 'var(--a)', i: 'hourglass' },
+      { l: 'Sin asignar', v: incs.filter(i => ['Registrada', 'Revisada'].includes(i.estado)).length, s: 'Pendientes de gestión', c: 'var(--a)', i: 'hourglass' },
       { l: 'En atención', v: incs.filter(i => ['Asignada', 'En atención'].includes(i.estado)).length, s: 'Con técnico asignado', c: 'var(--c)', i: 'wrench' },
       { l: 'Críticas activas', v: activas.filter(i => i.prioridad === 'Crítica').length, s: 'Requieren acción inmediata', c: 'var(--r)', i: 'flame' },
       { l: 'Resueltas / Cerradas', v: resueltas.length, s: 'Ciclo completado', c: 'var(--g)', i: 'check-circle' },
@@ -912,7 +914,7 @@ class UIController {
 
     /* Panel de acciones por rol */
     let actions = '';
-    if (canOp && ['Registrada', 'En evaluación'].includes(i.estado)) {
+    if (canOp && ['Registrada', 'Revisada'].includes(i.estado)) {
       const tecs = UserService.tecnicos();
       actions += `<div class="sec"><h4><i data-lucide="clipboard-check"></i>Evaluar clasificación IA</h4><div class="act-box a">
         <div class="row row-2" style="margin-bottom:10px">
