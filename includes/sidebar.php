@@ -8,11 +8,11 @@ $user = currentUser();
 $rol = strtolower($user['nomRol'] ?? 'reportante');
 $currentPage = basename($_SERVER['PHP_SELF']);
 
-// Generar iniciales del nombre
+// Generar iniciales del nombre (mb_ para soportar caracteres acentuados)
 $nombres = explode(' ', $user['nomUsuario'] ?? 'Usuario');
 $iniciales = '';
 foreach (array_slice($nombres, 0, 2) as $n) {
-    $iniciales .= strtoupper(substr($n, 0, 1));
+    $iniciales .= mb_strtoupper(mb_substr($n, 0, 1, 'UTF-8'), 'UTF-8');
 }
 ?>
 
