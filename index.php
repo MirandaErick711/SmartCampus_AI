@@ -87,6 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- Scripts generales del sistema -->
+    <script src="assets/js/main.js" defer></script>
     <style>
         .demo-btn {
             background: rgba(255,255,255,0.03);
@@ -203,16 +206,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </div>
 
-<script>
-    if (typeof lucide !== 'undefined') {
-        lucide.createIcons();
-    }
-
-    function setDemo(email, pass) {
-        document.getElementById('email').value = email;
-        document.getElementById('password').value = pass;
-        document.getElementById('loginForm').submit();
-    }
-</script>
 </body>
 </html>

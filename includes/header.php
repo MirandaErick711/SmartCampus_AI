@@ -26,6 +26,9 @@ $tituloPagina = $tituloPagina ?? 'SmartCampus AI';
 
     <!-- Estilos Oficiales Dark OLED + Neon -->
     <link rel="stylesheet" href="assets/css/styles.css">
+
+    <!-- Scripts generales del sistema -->
+    <script src="assets/js/main.js" defer></script>
     <style>
         .alert-flash {
             padding: 12px 16px;
